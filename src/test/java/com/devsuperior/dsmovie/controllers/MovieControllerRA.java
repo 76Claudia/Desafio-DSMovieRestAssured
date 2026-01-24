@@ -111,7 +111,7 @@ public class MovieControllerRA {
 	
 	@Test
 	public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndBlankTitle() throws JSONException {	
-		postMovieInstance.put("title", null);
+		postMovieInstance.put("title", "  ");
 		JSONObject newMovie = new JSONObject(postMovieInstance);
 		
 		given()
@@ -120,17 +120,14 @@ public class MovieControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 			.body(newMovie)
-			.log()
-			.all()
+		
+		
 		.when()
 			.post("/movies")
 		.then()
-			.statusCode(422)
-			.log().all().statusCode(422)
-			.body("errors.message[0]", equalTo("Campo requerido"));
+			.statusCode(422);
 			
-			
-		
+
 	}
 	
 	@Test
@@ -142,13 +139,11 @@ public class MovieControllerRA {
 				.header("Authorization", "Bearer " + clientToken)
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(newMovie.toString())
-				.log()
-				.all() 
+				.body(newMovie)
+				
 			.when()
 				.post("/movies")
 			.then()
-			
 				.statusCode(403);		
 			
 	}

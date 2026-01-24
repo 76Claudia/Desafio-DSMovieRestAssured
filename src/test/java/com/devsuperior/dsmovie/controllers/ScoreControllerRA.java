@@ -21,7 +21,6 @@ public class ScoreControllerRA {
 	private String clientUsername, clientPassword, adminUsername, adminPassword;
 	private String clientToken, adminToken, invalidToken;
 	private Long existingMovieId, nonExistingMovieId, invalidMovieId;
-
 	
 
 	private Map<String, Object> putScoreInstance;
@@ -39,25 +38,23 @@ public class ScoreControllerRA {
 			nonExistingMovieId = 100L;
 			invalidMovieId = 0L;
 			
+			
+			
 			clientToken = TokenUtil.obtainAccessToken(clientUsername, clientPassword);
 			adminToken = TokenUtil.obtainAccessToken(adminUsername, adminPassword);
 			invalidToken = invalidToken = adminToken + "xpto"; // Invalid token
-			
-			
 		
-			putScoreInstance = new HashMap<>();
-			putScoreInstance.put("movieId", 1);
-			putScoreInstance.put("score", 4);
-			
+
 	 }
 	
 	@Test
 	public void saveScoreShouldReturnNotFoundWhenMovieIdDoesNotExist() throws Exception {	
 
 		   Map<String, Object> putScoreInstance = new HashMap<>();
-		   putScoreInstance.put("movieId", nonExistingMovieId);
+		   putScoreInstance.put("movieId", 100L);
+		   putScoreInstance.put("score", 4.0);
            JSONObject newScore = new JSONObject(putScoreInstance);
-           nonExistingMovieId = 100L;
+           
 		
 		given()
 			.header("Content-type", "application/json")
@@ -76,37 +73,34 @@ public class ScoreControllerRA {
 	
 	@Test
 	public void saveScoreShouldReturnUnprocessableEntityWhenMissingMovieId() throws Exception {
-		 
-		Map<String, Object> putScoreInstance = new HashMap<>();
-		 putScoreInstance.put("movieId", null);
-         JSONObject newScore = new JSONObject(putScoreInstance);
-         nonExistingMovieId = 100L;
-		
+		Map<String, Object> scoreInstance = new HashMap<>();
+		scoreInstance.put("movieId", null);
+		scoreInstance.put("score", 4.0);
+        JSONObject newScore = new JSONObject(scoreInstance);
+     	
 		given()
 			.header("Content-type", "application/json")
 			.header("Authorization", "Bearer " + clientToken)
 			.body(newScore.toString())
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
+		
 		.when()
-			.put("/movies/{id}/score",nonExistingMovieId)
+			.put("/movies/{id}/score", existingMovieId)
 		.then()
 			.statusCode(422);
 			
-		
-			
-		
 	}
 	
 	
 	@Test
 	public void saveScoreShouldReturnUnprocessableEntityWhenScoreIsLessThanZero() throws Exception {		
-		
-		 
-		Map<String, Object> invalidScore = new HashMap<>(putScoreInstance);
-		 invalidScore.put("score", -1L);
-         JSONObject newScore = new JSONObject(putScoreInstance);
+		Map<String, Object> scoreInstance = new HashMap<>();
+		 scoreInstance.put("movieId", 1);
+		 scoreInstance.put("score", -1.0);
+         JSONObject newScore = new JSONObject(scoreInstance);
          invalidMovieId = 0L;
+       
 		
 		given()
 			.header("Content-type", "application/json")
@@ -115,7 +109,7 @@ public class ScoreControllerRA {
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
-			.put("/movies/{id}/score", nonExistingMovieId)
+		 	.put("/scores")
 		.then()
 			.statusCode(422);
 		
