@@ -86,7 +86,7 @@ public class ScoreControllerRA {
 			.accept(ContentType.JSON)
 		
 		.when()
-			.put("/movies/{id}/score", existingMovieId)
+			.put("/scores")
 		.then()
 			.statusCode(422);
 			
